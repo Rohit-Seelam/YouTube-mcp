@@ -1,0 +1,67 @@
+[project]
+name = "youtube-mcp"
+version = "0.1.0"
+description = "A Model Context Protocol server for YouTube operations - extract captions, topics, and playlist information"
+readme = "README.md"
+authors = [
+    { name = "Rohit-Seelam", email = "rohitseelam09@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.11"
+keywords = ["youtube", "mcp", "model-context-protocol", "captions", "api"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "google-api-python-client>=2.173.0",
+    "mcp>=1.9.4",
+    "python-dotenv>=1.1.0",
+    "yt-dlp>=2025.6.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/Rohit-Seelam/YouTube-mcp"
+Repository = "https://github.com/Rohit-Seelam/YouTube-mcp"
+Issues = "https://github.com/Rohit-Seelam/YouTube-mcp/issues"
+
+[project.scripts]
+youtube-mcp-server = "youtube_mcp.server:main"
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.4.1",
+    "ruff>=0.12.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/youtube_mcp"]
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C90", "I", "N", "UP", "YTT", "S", "BLE", "FBT", "B", "A", "COM", "C4", "DTZ", "T10", "EM", "EXE", "FA", "ISC", "ICN", "G", "INP", "PIE", "T20", "PYI", "PT", "Q", "RSE", "RET", "SLF", "SLOT", "SIM", "TID", "TCH", "INT", "ARG", "PTH", "ERA", "PD", "PGH", "PL", "TRY", "FLY", "NPY", "AIR", "PERF", "FURB", "LOG", "RUF"]
+ignore = ["S101", "PLR0913", "PLR0912", "PLR0915"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
