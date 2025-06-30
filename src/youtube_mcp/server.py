@@ -41,8 +41,8 @@ def get_youtube_client() -> YouTubeClient:
         try:
             youtube_client = YouTubeClient()
             logger.info("YouTube client initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize YouTube client: {e}")
+        except Exception:
+            logger.exception("Failed to initialize YouTube client")
             raise
     return youtube_client
 
@@ -77,14 +77,13 @@ def extract_youtube_captions(video_url: str, language_preference: str = "en") ->
         if "error" in result:
             logger.error(f"Caption extraction failed: {result.get('error', 'Unknown error')}")
         else:
-            logger.info(
-                f"Successfully extracted captions for video: {result.get('video_title', 'Unknown')}",
-            )
+            video_title = result.get("video_title", "Unknown")
+            logger.info(f"Successfully extracted captions for video: {video_title}")
 
         return result
 
     except Exception as e:
-        logger.error(f"Exception in extract_youtube_captions: {e!s}")
+        logger.exception("Exception in extract_youtube_captions")
         return {"error": str(e), "message": "Failed to extract captions from YouTube video"}
 
 
@@ -116,14 +115,13 @@ def extract_video_topics(video_url: str) -> dict[str, Any]:
             logger.error(f"Topic extraction failed: {result.get('error', 'Unknown error')}")
         else:
             topics_count = len(result.get("topics", []))
-            logger.info(
-                f"Successfully extracted {topics_count} topics for video: {result.get('video_title', 'Unknown')}",
-            )
+            video_title = result.get("video_title", "Unknown")
+            logger.info(f"Successfully extracted {topics_count} topics for video: {video_title}")
 
         return result
 
     except Exception as e:
-        logger.error(f"Exception in extract_video_topics: {e!s}")
+        logger.exception("Exception in extract_video_topics")
         return {"error": str(e), "message": "Failed to extract topics from YouTube video"}
 
 
@@ -170,7 +168,7 @@ def extract_playlist_titles(playlist_url: str) -> dict[str, Any]:
         return result
 
     except Exception as e:
-        logger.error(f"Exception in extract_playlist_titles: {e!s}")
+        logger.exception("Exception in extract_playlist_titles")
         return {"error": str(e), "message": "Failed to extract titles from YouTube playlist"}
 
 
@@ -182,8 +180,7 @@ def main():
     api_key = os.getenv("YOUTUBE_API_KEY")
     if not api_key:
         logger.error("YOUTUBE_API_KEY environment variable is required")
-        print("Error: YOUTUBE_API_KEY environment variable is required")
-        print("Please set your YouTube Data API v3 key from Google Cloud Platform")
+        logger.error("Please set your YouTube Data API v3 key from Google Cloud Platform")
         return
 
     try:
@@ -194,11 +191,10 @@ def main():
         get_youtube_client()
 
         logger.info("YouTube MCP Server starting...")
-        print("YouTube MCP Server starting...")
-        print("Available tools:")
-        print("  - extract_youtube_captions: Extract captions from YouTube videos")
-        print("  - extract_video_topics: Extract topics/sections from video descriptions")
-        print("  - extract_playlist_titles: Extract video titles from playlists")
+        logger.info("Available tools:")
+        logger.info("  - extract_youtube_captions: Extract captions from YouTube videos")
+        logger.info("  - extract_video_topics: Extract topics/sections from video descriptions")
+        logger.info("  - extract_playlist_titles: Extract video titles from playlists")
 
         # Run the FastMCP server
         logger.info("Starting FastMCP server with stdio transport")
@@ -207,7 +203,6 @@ def main():
 
     except Exception as e:
         logger.error(f"Error starting server: {e}")
-        print(f"Error starting server: {e}")
         return
 
 

@@ -27,7 +27,9 @@ class YouTubeClient:
         self.youtube = build("youtube", "v3", developerKey=self.api_key, cache_discovery=False)
 
     def get_video_captions(
-        self, video_url: str, language_preference: str | None = None,
+        self,
+        video_url: str,
+        language_preference: str | None = None,
     ) -> dict[str, Any]:
         """Extract captions from YouTube video using yt-dlp."""
         video_id = extract_video_id(video_url)
@@ -44,6 +46,9 @@ class YouTubeClient:
                 "skip_download": True,
                 "quiet": True,
                 "no_warnings": True,
+                "noprogress": True,
+                "no_color": True,
+                "extract_flat": False,
                 "outtmpl": os.path.join(temp_dir, "%(title)s.%(ext)s"),
                 "subtitleslangs": [language_preference or "en"] if language_preference else ["en"],
             }
@@ -52,7 +57,8 @@ class YouTubeClient:
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     # Extract info to get available languages
                     info = ydl.extract_info(
-                        f"https://www.youtube.com/watch?v={video_id}", download=False,
+                        f"https://www.youtube.com/watch?v={video_id}",
+                        download=False,
                     )
 
                     subtitles = info.get("subtitles", {})
@@ -179,7 +185,10 @@ class YouTubeClient:
 
             while True:
                 request = self.youtube.playlistItems().list(
-                    part="snippet", playlistId=playlist_id, maxResults=50, pageToken=next_page_token,
+                    part="snippet",
+                    playlistId=playlist_id,
+                    maxResults=50,
+                    pageToken=next_page_token,
                 )
 
                 response = request.execute()
